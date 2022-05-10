@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+
+if $PROGRAM_NAME == __FILE__
+  $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+end
+
+require 'delete_derived_data'
+require 'optparse'
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: delete_derived_data [options] | delete_derived_data"
+
+  opts.on('-d', '--directory PATH', "Directory that should be searching") do |path|
+    options[:root_dir] = path
+  end
+
+  opts.on('-a', '--archives', "Xcode Archives should be deleted") do |a|
+    options[:archives] = a
+  end
+
+  opts.on('-s', '--sempty', "Secure empty trash contents") do |s|
+    options[:sempty] = s
+  end
+
+  opts.on('-t', '--trash', "Empty trash contents") do |t|
+    options[:trash] = t
+  end
+
+  opts.on("-V", '--verbose', "Show more debugging information") do |v|
+    options[:verbose] = v
+  end
+
+  opts.on_tail('-h', '--help', 'Show this message') { puts opts; exit }
+  opts.on_tail("-v", "--version", "Show version") { puts DeleteDerivedData::VERSION; exit }
+  opts.parse!
+
+end
+
+DeleteDerivedData.delete(options)
